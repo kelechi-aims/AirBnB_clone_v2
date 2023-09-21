@@ -123,32 +123,6 @@ class HBNBCommand(cmd.Cmd):
         except KeyError:
             print("** no instance found **")
 
-    def do_all(self, line):
-        """Prints all string representations of all instances
-        (Exceptions: NameError)
-        """
-        if os.getenv("HBNB_TYPE_STORAGE") == "db":
-            objects = storage.all(line)
-        else:
-            objects = storage.all()
-        my_list = []
-        if not line:
-            for key in objects:
-                my_list.append(objects[key])
-            print(my_list)
-            return
-        try:
-            args = line.split(" ")
-            if args[0] not in self.all_classes:
-                raise NameError()
-            for key in objects:
-                name = key.split('.')
-                if name[0] == args[0]:
-                    my_list.append(objects[key])
-            print(my_list)
-        except NameError:
-            print("** class doesn't exist **")
-
     def do_update(self, line):
         """Updates an instance by adding or updating attributes
         (Exceptions: SyntaxError, NameError, IndexError, KeyError,
@@ -255,6 +229,32 @@ class HBNBCommand(cmd.Cmd):
                     self.do_update(args)
         else:
             cmd.Cmd.default(self, line)
+
+    def do_all(self, line):
+        """Prints all string representations of all instances
+        (Exceptions: NameError)
+        """
+        if os.getenv("HBNB_TYPE_STORAGE") == "db":
+            objects = storage.all(line)
+        else:
+            objects = storage.all()
+        my_list = []
+        if not line:
+            for key in objects:
+                my_list.append(objects[key])
+            print(my_list)
+            return
+        try:
+            args = line.split(" ")
+            if args[0] not in self.all_classes:
+                raise NameError()
+            for key in objects:
+                name = key.split('.')
+                if name[0] == args[0]:
+                    my_list.append(objects[key])
+            print(my_list)
+        except NameError:
+            print("** class doesn't exist **")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
