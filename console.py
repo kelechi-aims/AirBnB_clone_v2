@@ -223,32 +223,22 @@ class HBNBCommand(cmd.Cmd):
         except ValueError:
             print("** value missing **")
 
-    def do_all(self, line):
-        '''
-        Prints all string representations of all instances
-        with Exceptions: NameError
-        '''
-        if os.getenv("HBNB_TYPE_STORAGE") == "db":
-            objects = storage.all(line)
+    def do_all(self, args):
+
+        obj = storage.all()
+        print_list = []
+        if args:
+            args = args.split(' ')[0]  # remove possible trailing args
+            if args not in HBNBCommand.all_classes:
+                print("** class doesn't exist **")
+                return
+            for k, v in obj.items():
+                if k.split('.')[0] == args:
+                    print_list.append(str(v))
         else:
-            objects = storage.all()
-        my_list = []
-        if not line:
-            for key in objects:
-                my_list.append(objects[key])
-            print(my_list)
-            return
-        try:
-            args = line.split(" ")
-            if args[0] not in self.all_classes:
-                raise NameError()
-            for key in objects:
-                name = key.split('.')
-                if name[0] == args[0]:
-                    my_list.append(objects[key])
-            print(my_list)
-        except NameError:
-            print("** class doesn't exist **")
+            for k, v in obj.items():
+                print_list.append(str(v))
+        print(print_list)
 
     def do_quit(self, line):
         return True
