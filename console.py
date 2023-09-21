@@ -23,9 +23,10 @@ class HBNBCommand(cmd.Cmd):
                    "Amenity", "Place", "Review"}
 
     def default(self, line):
-        """Retrieve all instances of a class and
+        '''
+        Retrieve all instances of a class and
         retrieve the number of instances
-        """
+        '''
         my_list = line.split('.')
         if len(my_list) >= 2:
             if my_list[1] == "all()":
@@ -48,18 +49,11 @@ class HBNBCommand(cmd.Cmd):
         else:
             cmd.Cmd.default(self, line)
 
-    def do_quit(self, line):
-        """Quit command to exit the program"""
-        return True
-
-    def do_EOF(self, line):
-        """Quit command to exit the program at the end of file"""
-        return True
-
     def do_create(self, line):
-        """Creates a new instance of BaseModel, saves it
-        (Exceptions: SyntaxError, NameError)
-        """
+        '''
+        Creates a new instance of BaseModel, saves it
+        with Exceptions: SyntaxError, NameError
+        '''
         try:
             if not line:
                 raise SyntaxError()
@@ -91,9 +85,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_show(self, line):
-        """Prints the string representation of an instance
-        (Exceptions: SyntaxError, NameError, IndexError, KeyError)
-        """
+        '''
+        Prints the string representation of an instance
+        with Exceptions: SyntaxError, NameError, IndexError, KeyError
+        '''
         try:
             if not line:
                 raise SyntaxError()
@@ -118,9 +113,10 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def do_destroy(self, line):
-        """Deletes an instance based on the class name and id
-        (Exceptions: SyntaxError, NameError, IndexError, KeyError)
-        """
+        '''
+        Deletes an instance based on the class name and id
+        with Exceptions: SyntaxError, NameError, IndexError, KeyError
+        '''
         try:
             if not line:
                 raise SyntaxError()
@@ -146,9 +142,10 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def count(self, line):
-        """Count the number of instances of a class
-        (Exceptions: NameError)
-        """
+        '''
+        Count the number of instances of a class
+        with Exceptions: NameError
+        '''
         counter = 0
         try:
             my_list = split(line, " ")
@@ -164,12 +161,11 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def strip_clean(self, args):
-        """Strips the argument and returns a string of command
+        '''
+        Strips the argument and returns a string of command
         Args:
             args: input list of args
-        Return:
-            returns a string of arguments
-        """
+        '''
         new_list = []
         new_list.append(args[0])
         try:
@@ -187,10 +183,11 @@ class HBNBCommand(cmd.Cmd):
         return " ".join(i for i in new_list)
 
     def do_update(self, line):
-        """Updates an instance by adding or updating attributes
-        (Exceptions: SyntaxError, NameError, IndexError, KeyError,
-        AttributeError, ValueError)
-        """
+        '''
+        Updates an instance by adding or updating attributes
+        with Exceptions: SyntaxError, NameError, IndexError, KeyError,
+        AttributeError, ValueError
+        '''
         try:
             if not line:
                 raise SyntaxError()
@@ -227,9 +224,10 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
 
     def do_all(self, line):
-        """Prints all string representations of all instances
-        (Exceptions: NameError)
-        """
+        '''
+        Prints all string representations of all instances
+        with Exceptions: NameError
+        '''
         if os.getenv("HBNB_TYPE_STORAGE") == "db":
             objects = storage.all(line)
         else:
@@ -251,6 +249,12 @@ class HBNBCommand(cmd.Cmd):
             print(my_list)
         except NameError:
             print("** class doesn't exist **")
+
+    def do_quit(self, line):
+        return True
+
+    def do_EOF(self, line):
+        return True
 
     def emptyline(self):
         pass
