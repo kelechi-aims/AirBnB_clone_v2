@@ -22,9 +22,31 @@ class HBNBCommand(cmd.Cmd):
     all_classes = {"BaseModel", "User", "State", "City",
                    "Amenity", "Place", "Review"}
 
-    def emptyline(self):
-        """Ignores empty spaces"""
-        pass
+    def default(self, line):
+        """Retrieve all instances of a class and
+        retrieve the number of instances
+        """
+        my_list = line.split('.')
+        if len(my_list) >= 2:
+            if my_list[1] == "all()":
+                self.do_all(my_list[0])
+            elif my_list[1] == "count()":
+                self.count(my_list[0])
+            elif my_list[1][:4] == "show":
+                self.do_show(self.strip_clean(my_list))
+            elif my_list[1][:7] == "destroy":
+                self.do_destroy(self.strip_clean(my_list))
+            elif my_list[1][:6] == "update":
+                args = self.strip_clean(my_list)
+                if isinstance(args, list):
+                    obj = storage.all()
+                    key = args[0] + ' ' + args[1]
+                    for k, v in args[2].items():
+                        self.do_update(key + ' "{}" "{}"'.format(k, v))
+                else:
+                    self.do_update(args)
+        else:
+            cmd.Cmd.default(self, line)
 
     def do_quit(self, line):
         """Quit command to exit the program"""
@@ -204,32 +226,6 @@ class HBNBCommand(cmd.Cmd):
         except ValueError:
             print("** value missing **")
 
-    def default(self, line):
-        """Retrieve all instances of a class and
-        retrieve the number of instances
-        """
-        my_list = line.split('.')
-        if len(my_list) >= 2:
-            if my_list[1] == "all()":
-                self.do_all(my_list[0])
-            elif my_list[1] == "count()":
-                self.count(my_list[0])
-            elif my_list[1][:4] == "show":
-                self.do_show(self.strip_clean(my_list))
-            elif my_list[1][:7] == "destroy":
-                self.do_destroy(self.strip_clean(my_list))
-            elif my_list[1][:6] == "update":
-                args = self.strip_clean(my_list)
-                if isinstance(args, list):
-                    obj = storage.all()
-                    key = args[0] + ' ' + args[1]
-                    for k, v in args[2].items():
-                        self.do_update(key + ' "{}" "{}"'.format(k, v))
-                else:
-                    self.do_update(args)
-        else:
-            cmd.Cmd.default(self, line)
-
     def do_all(self, line):
         """Prints all string representations of all instances
         (Exceptions: NameError)
@@ -255,6 +251,9 @@ class HBNBCommand(cmd.Cmd):
             print(my_list)
         except NameError:
             print("** class doesn't exist **")
+
+    def emptyline(self):
+        pass
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
