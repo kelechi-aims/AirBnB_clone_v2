@@ -8,13 +8,14 @@ from models.base_model import BaseModel, Base
 
 
 class User(BaseModel, Base):
-    """This is the class for user
+    '''
+    This is the class for user
     Attributes:
         email: the email address
         password: the password for your login
         first_name: user first name
         last_name: user last name
-    """
+    '''
     __tablename__ = 'users'
     
     email = Column(String(128), nullable=False)
