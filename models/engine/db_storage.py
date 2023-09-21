@@ -34,24 +34,35 @@ class DBStorage:
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(bind=self.__engine)
 
-    def all(self, cls=None):
-        """ Query on the current database session """
-        session = self.__session
-        obj_dict = {}
-
+ def all(self, cls=None):
+        '''
+        Prints all objects in the database
+        '''
+        instlist = [State, City, User]
+        new_dict = {}
         if cls:
-            objects = session.query(cls).all()
+            for obj in self.__session.query(instances[cls]).all():
+                key = str(obj.__class__.__name__) + "." + str(obj.id)
+                value = obj
+                new_dict[key] = value
+            return new_dict
         else:
-            objects = []
-            classes = [User, State, City, Amenity, Place, Review]
-            for cls in classes:
-                objects += session.query(cls).all()
+            for inst in instlist:
+                for obj in self.__session.query(inst).all():
+                    key = str(inst.__name__) + "." + str(obj.id)
+                    value = obj
+                    new_dict[key] = value
+            return new_dict
 
-        for obj in objects:
-            key = "{}.{}".format(obj.__class__.__name__, obj.id)
-            obj_dict[key] = obj
-
-        return obj_dict
+def reload(self):
+        '''
+        Create the current database session
+        '''
+        Base.metadata.create_all(self.__engine)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        Session = scoped_session(session_factory)
+        self.__session = Session()
 
     def new(self, obj):
         """ Add the object to the current database session """
@@ -59,22 +70,15 @@ class DBStorage:
             self.__session.add(obj)
 
     def save(self):
-        """ Commit all changes of the current database session """
         self.__session.commit()
 
     def delete(self, obj=None):
-        """ Delete from the current database session obj if not None """
+        '''
+        Delete from the current database session obj if not None
+        '''
         if obj:
             self.__session.delete(obj)
 
-    def reload(self):
-        """ Create the current database session """
-        Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
-        Session = scoped_session(session_factory)
-        self.__session = Session()
-
     def close(self):
         """ calls on remove """
-        self.__session.close()
+        self.__session.remove()
