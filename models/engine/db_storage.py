@@ -11,6 +11,8 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+instances = {"State": State, "City": City, "Amenity": Amenity,
+             "User": User, "Review": Review, "Place": Place}
 
 
 class DBStorage:
@@ -20,17 +22,17 @@ class DBStorage:
 
     def __init__(self):
         """ Create the engine (self.__engine) """
-        user = getenv("HBNB_MYSQL_USER")
-        pwd = getenv("HBNB_MYSQL_PWD")
-        host = getenv("HBNB_MYSQL_HOST")
-        db = getenv("HBNB_MYSQL_DB")
-        env = getenv("HBNB_ENV")
+        user = os.getenv("HBNB_MYSQL_USER")
+        pwd = os.getenv("HBNB_MYSQL_PWD")
+        host = os.getenv("HBNB_MYSQL_HOST")
+        db = os.getenv("HBNB_MYSQL_DB")
+        env = os.getenv("HBNB_ENV")
 
         db_url = "mysql+mysqldb://{}:{}@{}/{}".format(user, pwd, host, db)
         self.__engine = create_engine(db_url, pool_pre_ping=True)
 
-        if env == "test":
-            Base.metadata.drop_all(self.__engine)
+        if os.getenv("HBNB_ENV") == "test":
+            Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
         """ Query on the current database session """
