@@ -11,25 +11,31 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+database = os.getenv("HBNB_MYSQL_DB")
+host = os.getenv("HBNB_MYSQL_HOST")
+password = os.getenv("HBNB_MYSQL_PWD")
+user = os.getenv("HBNB_MYSQL_USER")
+
 instances = {"State": State, "City": City, "Amenity": Amenity,
              "User": User, "Review": Review, "Place": Place}
 
 
-class DBStorage:
-    """ Private class attributes for able creation """
+class DBStorage():
+    '''
+    DBStorage class
+    '''
     __engine = None
     __session = None
 
     def __init__(self):
-        """ Create the engine (self.__engine) """
-        user = os.getenv("HBNB_MYSQL_USER")
-        pwd = os.getenv("HBNB_MYSQL_PWD")
-        host = os.getenv("HBNB_MYSQL_HOST")
-        db = os.getenv("HBNB_MYSQL_DB")
-        env = os.getenv("HBNB_ENV")
-
-        db_url = "mysql+mysqldb://{}:{}@{}/{}".format(user, pwd, host, db)
-        self.__engine = create_engine(db_url, pool_pre_ping=True)
+        '''
+        Creates the engine
+        '''
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}"
+                                      .format(user, password, host, database),
+                                      pool_pre_ping=True)
+        if os.getenv("HBNB_ENV") == "test":
+            Base.metadata.drop_all(bind=self.__engine)
 
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(bind=self.__engine)
@@ -65,7 +71,9 @@ def reload(self):
         self.__session = Session()
 
     def new(self, obj):
-        """ Add the object to the current database session """
+        '''
+        Add the object to the current database session
+        '''
         if obj:
             self.__session.add(obj)
 
@@ -80,5 +88,4 @@ def reload(self):
             self.__session.delete(obj)
 
     def close(self):
-        """ calls on remove """
         self.__session.remove()
