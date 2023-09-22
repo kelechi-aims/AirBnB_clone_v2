@@ -16,6 +16,7 @@ association_table = Table("place_amenity", Base.metadata,
                                  ForeignKey("amenities.id"),
                                  primary_key=True, nullable=False))
 
+
 class Place(BaseModel, Base):
     """
     Represents a Place for a MySQL database.
@@ -32,10 +33,10 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     amenity_ids = []
-    
+
     # Reviews relationship
     reviews = relationship("Review", backref="place", cascade="delete")
-    
+
     # Amenities relationship
     amenities = relationship("Amenity", secondary="place_amenity", viewonly=False)
 
