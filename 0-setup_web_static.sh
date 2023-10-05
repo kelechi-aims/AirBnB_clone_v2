@@ -24,28 +24,8 @@ sudo ln -fs /data/web_static/releases/test /data/web_static/current
 sudo chown -R ubuntu:ubuntu /data/
 sudo chgrp -R ubuntu:ubuntu /data/
 
-printf %s "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    add_header X-Served-By $hostname;
-    root   /var/www/html;
-    index  index.html index.htm;
-    location /hbnb_static {
-        alias /data/web_static/current;
-        index index.html index.htm;
-    }
-    location /redirect_me {
-        return 301 http://github.com/anotibills;
-    }
-    error_page 404 /404.html;
-    location /404 {
-      root /var/www/html;
-      internal;
-    }
-}" > /etc/nginx/sites-available/default
-
-# test that nginx is working fine
-sudo nginx -t
+# Update the Nginx configuration
+sudo sed -i '38i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
 
 # Restart nginx to effect changes
 sudo service nginx restart
