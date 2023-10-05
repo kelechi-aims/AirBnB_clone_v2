@@ -13,7 +13,7 @@ sudo mkdir -p /data/web_static/releases/test
 sudo echo "Hello World!" | sudo tee /data/web_static/releases/test/index.html
 sudo ln -fs /data/web_static/releases/test /data/web_static/current
 
-# change owner of /data
+# change owner of /data to ubuntu
 sudo chown -R ubuntu:ubuntu /data/
 
 #using sed command
