@@ -10,7 +10,6 @@ import os
 env.hosts = ['54.234.57.34', '54.89.143.165']
 
 
-
 def do_deploy(archive_path):
     """
     Distributes an archive to your web servers
@@ -23,7 +22,8 @@ def do_deploy(archive_path):
         put(archive_path, '/tmp/')
         # Extract archive to the folder /data/web_static/releases/
         archive_filename = os.path.basename(archive_path)
-        archive_folder = '/data/web_static/releases/' + archive_filename.split('.')[0]
+        archive_folder = '/data/web_static/releases/' + \
+            archive_filename.split('.')[0]
         run('mkdir -p {}'.format(archive_folder))
         run('tar -xzf /tmp/{} -C {}'.format(archive_filename, archive_folder))
 
