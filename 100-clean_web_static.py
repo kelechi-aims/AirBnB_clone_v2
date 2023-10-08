@@ -2,8 +2,7 @@
 """
 Fabric script to clean up outdated archives
 """
-from fabric.api import env, run, local
-from os.path import exists
+from fabric.api import *
 
 
 env.hosts = ['54.234.57.34', '54.89.143.165']
@@ -12,16 +11,12 @@ env.hosts = ['54.234.57.34', '54.89.143.165']
 def do_clean(number=0):
     """Deletes out-of-date archives"""
     number = int(number)
-    if number < 1:
-        number = 1
+
+    if number == 0:
+        number = 2
     else:
         number += 1
 
-    local_archives = local("ls -1t versions", capture=True).splitlines()
-    server_archives = run("ls -1t /data/web_static/releases").splitlines()
-
-    for archive in local_archives[number:]:
-        local("rm versions/{}".format(archive))
-
-    for archive in server_archives[number:]:
-        run("rm -rf /data/web_static/releases/{}".format(archive))
+    local('cd versions ; ls -t | tail -n +{} | xargs rm -rf'.format(number))
+    path = '/data/web_static/releases'
+    run('cd {} ; ls -t | tail -n +{} | xargs rm -rf'.format(path, number))
