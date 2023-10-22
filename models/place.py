@@ -8,7 +8,9 @@ from models.review import Review
 from sqlalchemy import Column, ForeignKey, Integer, Float, String, Table
 from sqlalchemy.orm import relationship
 
-association_table = Table("place_amenity", Base.metadata,
+
+if getenv("HBNB_TYPE_STORAGE") == "db":
+    place_amenity = Table("place_amenity", Base.metadata,
                           Column("place_id", String(60),
                                  ForeignKey("places.id"),
                                  primary_key=True, nullable=False),
@@ -34,14 +36,17 @@ class Place(BaseModel, Base):
     longitude = Column(Float)
     amenity_ids = []
 
-    # Reviews relationship
-    reviews = relationship("Review", backref="place", cascade="delete")
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        # Reviews relationship
+        reviews = relationship("Review", backref="place", cascade="delete")
+        # Amenities relationship
+        amenities = relationship(
+            "Amenity",
+            secondary="place_amenity",
+            back_populates="place_amenities",
+            viewonly=False)
 
-    # Amenities relationship
-    amenities = relationship("Amenity", secondary="place_amenity",
-                            back_populates="places_amenities", viewonly=False)
-
-    if getenv("HBNB_TYPE_STORAGE", None) != "db":
+    else:
         @property
         def reviews(self):
             """Get a list of all linked Reviews."""
@@ -59,6 +64,7 @@ class Place(BaseModel, Base):
                 if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
+            """return self.amenity_ids"""
 
         @amenities.setter
         def amenities(self, value):
