@@ -7,7 +7,7 @@ from models.state import State
 app = Flask(__name__)
 
 
-@app.teardown_appcontex
+@app.teardown_appcontext
 def close_session(exception):
     """ Remove the current SQLAlchemy Session. """
     storage.close()
